@@ -1,7 +1,10 @@
 # Controllable Molecular Optimization through Disentangled Visual Representations
 
 ---
-![alt text](data/github/image.png)
+<p align="center">
+  <img src="data/github/image.png" alt="ControlMol overview" width="80%" />
+</p>
+
 **ControlMol** is a disentangled molecular optimization repository built around molecular image representations. The current mainline connects the following modules:
 
 - `CGIP` pretrained encoder: maps molecular images into 512-dimensional representations.
