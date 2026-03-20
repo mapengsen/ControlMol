@@ -1,7 +1,7 @@
 # Controllable Molecular Optimization through Disentangled Visual Representations
 
 ---
-
+![alt text](data/github/image.png)
 **ControlMol** is a disentangled molecular optimization repository built around molecular image representations. The current mainline connects the following modules:
 
 - `CGIP` pretrained encoder: maps molecular images into 512-dimensional representations.
@@ -16,12 +16,12 @@ This document focuses on the workflow that already exists in the repository and 
 ## 🪄 Adapt to Your Own Task
 This repository is most suitable for the following use cases:
 
-| Use Case | Relevant Module | Description |
-| --- | --- | --- |
-| Single-target property optimization | `train_optimization_MMP/train.py` + `inference_with_generation.py` | For example, optimize `BBBP` while keeping `ESOL/hERG/lipop` as unchanged as possible |
-| Batch candidate generation | `inference_with_generation.py` | Generate candidate molecular images for multiple starting molecules in the test set in one run |
-| Image-to-structure parsing | `batch_analyze_molecular_weight_parallel.py` | Use MolScribe to convert generated molecular images into SMILES in batch |
-| Final candidate selection | `select_best_decoupled_smiles_prompt.py` | Combine property prediction and similarity constraints to select the best disentangled molecule |
+| Use Case | Illustration | Relevant Module | Description |
+| --- | --- | --- | --- |
+| Single/Multi-target property optimization | <img src="data/github/moleculeOptimization.png" alt="Molecule optimization" width="260"> | `train_optimization_MMP/train.py` + `inference_with_generation.py` | For example, optimize `BBBP` while keeping `ESOL/hERG/lipop` as unchanged as possible |
+| Batch molecular image generation | <img src="data/github/MolecularGeneration.png" alt="Molecular generation" width="260"> | `inference_with_generation.py` | Generate candidate molecular images for multiple starting molecules in the test set in one run |
+| Image-to-SMILES | <img src="data/github/image2smiles.png" alt="Image to SMILES" width="260"> | `batch_analyze_molecular_weight_parallel.py` | Use MolScribe to convert generated molecular images into SMILES in batch |
+
 
 ## Installation
 
@@ -343,3 +343,9 @@ This project would like to acknowledge the following open-source works:
     year = 2023,
 }
 ```
+
+- [Prompt-MolOpt](https://github.com/wzxxxx/Prompt-MolOpt)
+
+Reference:
+
+Wu, Z., Zhang, O., Wang, X. et al. Leveraging language model for advanced multiproperty molecular optimization via prompt engineering. Nat Mach Intell 6, 1359-1369 (2024). https://doi.org/10.1038/s42256-024-00916-5
