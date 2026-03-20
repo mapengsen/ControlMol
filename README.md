@@ -314,3 +314,32 @@ python select_best_decoupled_smiles_prompt.py \
   --prediction_num_workers 16 \
   --prediction_device cuda
 ```
+
+## Acknowledgements
+
+This project would like to acknowledge the following open-source works:
+
+- [RCG](https://github.com/LTH14/rcg)
+
+```bibtex
+@Article{RCG2023,
+  author  = {Tianhong Li and Dina Katabi and Kaiming He},
+  journal = {arXiv:2312.03701},
+  title   = {Return of Unconditional Generation: A Self-supervised Representation Generation Method},
+  year    = {2023},
+}
+```
+
+- [MolScribe](https://github.com/thomas0809/MolScribe)
+
+```bibtex
+@article{
+    MolScribe,
+    title = {{MolScribe}: Robust Molecular Structure Recognition with Image-to-Graph Generation},
+    author = {Yujie Qian and Jiang Guo and Zhengkai Tu and Zhening Li and Connor W. Coley and Regina Barzilay},
+    journal = {Journal of Chemical Information and Modeling},
+    publisher = {American Chemical Society ({ACS})},
+    doi = {10.1021/acs.jcim.2c01480},
+    year = 2023,
+}
+```
