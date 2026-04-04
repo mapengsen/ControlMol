@@ -16,7 +16,23 @@
 This document focuses on the workflow that already exists in the repository and is aligned with the ADMET four-task setting:
 `BBBP`, `ESOL`, `hERG`, and `lipop`. The codebase still contains partial support for `Mutagenicity`, but the main commands in this README focus on the four properties above.
 
-## 🪄 Adapt to Your Own Task
+## 🪄 What can SelfMol do?
+- Antagonist generation
+- Analogues Design
+- Natural product Design
+- Single objective molecule attribute optimization.
+  - QED
+  - LogP
+  - SA
+  - MW
+  - HBD
+  - HBA
+  - Molecule Activity
+  - Molecule Toxicity
+- Muti objective molecule attribute optimization.
+  - Dual-target antagonists design
+
+
 This repository is most suitable for the following use cases:
 
 | Use Case | Illustration | Relevant Module | Description |
@@ -79,6 +95,30 @@ export PYTHONPATH="src/taming-transformers:$PYTHONPATH"
 ## Data and ckpt
 The data and checkpoints can be found on [Google Drive](https://drive.google.com/drive/folders/1TJh5tNz60hYp3Cp_aMNKzZcZP3MiHcBK?usp=sharing).
 
+
+#### 1️⃣ The 10M training datasets
+
+| Name   | Link                                                                                         | Description                                                  |
+| ------ |----------------------------------------------------------------------------------------------| ------------------------------------------------------------ |
+| Pubchem10M | [Google](https://drive.google.com/file/d/1t1Ws-wPYPeeuc8f_SGgnfUCVCzlM_jUJ/view?usp=sharing) | 10 million images of drug-like, bioactive molecules obtained from the PubChem database |
+
+#### 2️⃣ Target datasets
+The five target molecule datasets are provided.
+
+| Name  | Link                                                                                         | Description    |
+|-------|----------------------------------------------------------------------------------------------|----------------|
+| Beta-1   | [Google](https://drive.google.com/file/d/1t1Ws-wPYPeeuc8f_SGgnfUCVCzlM_jUJ/view?usp=sharing) | The target Beta-1 |
+| Beta-2 | [Google](https://drive.google.com/file/d/1t1Ws-wPYPeeuc8f_SGgnfUCVCzlM_jUJ/view?usp=sharing) | The target Beta-2 |
+| EPHX2  | [Google](https://drive.google.com/file/d/1t1Ws-wPYPeeuc8f_SGgnfUCVCzlM_jUJ/view?usp=sharing) | The target EPHX2 |
+| EP4   | [Google](https://drive.google.com/file/d/1t1Ws-wPYPeeuc8f_SGgnfUCVCzlM_jUJ/view?usp=sharing) | The target EP4 |
+
+
+
+### Download pretrained model
+⬇️⬇️ You can download the pre-trained VAE in [Google](https://drive.google.com/file/d/1t1Ws-wPYPeeuc8f_SGgnfUCVCzlM_jUJ/view?usp=sharing).
+
+
+
 ## Model Training
 
 ## 1️⃣ First Step --> Train the Diffusion Model
@@ -117,6 +157,38 @@ python -m torch.distributed.launch \
   --data_path data/pretrain_imageGeneration_images/image_file \
   --eval_freq 1
 ```
+
+### Use the VAE
+You can use our VAE to your molecule image generation tasks, just follow the steps:
+Load the VAE:
+```commandline
+from latentDiffusion.ldm.util import instantiate_from_config
+from omegaconf import OmegaConf
+def load_model_from_config(config, ckpt):
+    print(f"Loading model from {ckpt}")
+    pl_sd = torch.load(ckpt, map_location="cpu")
+    global_step = pl_sd["global_step"]
+    sd = pl_sd["state_dict"]
+    model = instantiate_from_config(config.model)
+    m, u = model.load_state_dict(sd, strict=False)
+    model.to(device)
+    model.eval()
+    return {"model": model}, global_step
+
+config_path = "latentDiffusion/models/first_stage_models/kl-f8/config.yaml"
+ckpt_path = "latentDiffusion/logs/imageMol_chembl.ckpt"
+config = OmegaConf.load(config_path)
+model_info, step = load_model_from_config(config, ckpt_path)
+vae = model_info["model"]
+```
+Use the VAE to encode and decoder molecule images:
+```commandline
+encoder_x = vae.encode(x).sample().mul_(0.18215)    # (1,3,256,256) --> (1,4,32,32)
+encoder_x = encoder_x / 0.18215
+decoder_x = self.vae.decode(encoder_x)              # (1,4,32,32)--> (1,3,256,256)
+```
+
+
 
 ## 2️⃣ Second Step --> Data and Representation Preparation
 The goal of this stage is to reorganize the training and test data into property-specific CSV files and prepare the molecular representations and property labels required by later training steps.
